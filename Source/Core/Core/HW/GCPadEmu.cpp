@@ -79,6 +79,10 @@ GCPad::GCPad(const unsigned int index) : m_index(index)
 	for (auto& named_direction : named_directions)
 		m_dpad->controls.emplace_back(new ControlGroup::Input(named_direction));
 
+	// connection toggle
+	groups.emplace_back(m_connection_toggle = new Buttons(_trans("Toggle Controller Connection")));
+	m_connection_toggle->controls.emplace_back(new ControllerEmu::Input(_trans("Button")));
+
 	// options
 	groups.emplace_back(m_options = new ControlGroup(_trans("Options")));
 	m_options->settings.emplace_back(new ControlGroup::BackgroundInputSetting(_trans("Background Input")));
@@ -103,6 +107,9 @@ void GCPad::GetInput(GCPadStatus* const pad)
 
 	// dpad
 	m_dpad->GetState(&pad->button, dpad_bitmasks);
+
+	// controller toggle
+	if (m_connection_toggle->controls[0]->control_ref->State() > 0.0f) pad->button |= PAD_TOGGLE_CONNECTION;
 
 	// sticks
 	m_main_stick->GetState(&x, &y);

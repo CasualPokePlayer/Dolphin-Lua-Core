@@ -28,6 +28,9 @@ CSIDevice_GCController::CSIDevice_GCController(SIDevices device, int _iDeviceNum
 	m_Mode                   = 0x03;
 
 	m_Calibrated = false;
+
+	m_IsConnected = true;
+	m_IsTogglingConnection = false;
 }
 
 void CSIDevice_GCController::Calibrate()
@@ -49,6 +52,14 @@ int CSIDevice_GCController::RunBuffer(u8* _pBuffer, int _iLength)
 {
 	// For debug logging only
 	ISIDevice::RunBuffer(_pBuffer, _iLength);
+
+	GetPadStatus();
+	if (!m_IsConnected)
+	{
+		constexpr u32 reply = SI_ERROR_NO_RESPONSE;
+		std::memcpy(_pBuffer, &reply, sizeof(reply));
+		return 4;
+	}
 
 	// Read the command
 	EBufferCommands command = static_cast<EBufferCommands>(_pBuffer[3]);
@@ -162,6 +173,20 @@ GCPadStatus CSIDevice_GCController::GetPadStatus()
 	}
 
 	HandleMoviePadStatus(&PadStatus);
+
+	if (!(PadStatus.button & PAD_TOGGLE_CONNECTION))
+	{
+		m_IsTogglingConnection = false;
+	}
+
+	if (!m_IsTogglingConnection && (PadStatus.button & PAD_TOGGLE_CONNECTION))
+	{
+		m_IsConnected = !m_IsConnected;
+		m_IsTogglingConnection = true;
+	}
+
+	PadStatus.button &= ~PAD_TOGGLE_CONNECTION;
+
 	return PadStatus;
 }
 
@@ -174,6 +199,13 @@ GCPadStatus CSIDevice_GCController::GetPadStatus()
 bool CSIDevice_GCController::GetData(u32& _Hi, u32& _Low)
 {
 	GCPadStatus PadStatus = GetPadStatus();
+
+	if (!m_IsConnected)
+	{
+		_Hi = 0x80000000;
+		return true;
+	}
+
 	if (HandleButtonCombos(PadStatus) == COMBO_ORIGIN)
 		PadStatus.button |= PAD_GET_ORIGIN;
 
@@ -336,4 +368,6 @@ void CSIDevice_GCController::DoState(PointerWrap& p)
 	p.Do(m_TButtonComboStart);
 	p.Do(m_TButtonCombo);
 	p.Do(m_LastButtonCombo);
+	p.Do(m_IsConnected);
+	p.Do(m_IsTogglingConnection);
 }

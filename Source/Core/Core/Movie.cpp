@@ -922,6 +922,9 @@ namespace Movie {
 		if (padState.reset)
 			display_str += " RESET";
 
+		if (padState.ToggleConnection)
+			display_str += " TOGGLE CONNECTION";
+
 		display_str += Analog1DToString(padState.TriggerL, " L");
 		display_str += Analog1DToString(padState.TriggerR, " R");
 		display_str += Analog2DToString(padState.AnalogStickX, padState.AnalogStickY, " ANA");
@@ -1083,6 +1086,8 @@ namespace Movie {
 		g_bDiscChange = false;
 		s_padState.reset = g_bReset;
 		g_bReset = false;
+
+		s_padState.ToggleConnection = ((PadStatus->button & PAD_TOGGLE_CONNECTION) != 0);
 
 		SetInputDisplayString(s_padState, controllerID);
 	}
@@ -1486,6 +1491,9 @@ namespace Movie {
 
 		if (s_padState.reset)
 			ProcessorInterface::ResetButton_Tap();
+
+		if (s_padState.ToggleConnection)
+			PadStatus->button |= PAD_TOGGLE_CONNECTION;
 
 		SetInputDisplayString(s_padState, controllerID);
 		CheckInputEnd();

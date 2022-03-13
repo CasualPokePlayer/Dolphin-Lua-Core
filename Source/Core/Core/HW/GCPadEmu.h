@@ -28,6 +28,7 @@ private:
 	AnalogStick*   m_main_stick;
 	AnalogStick*   m_c_stick;
 	Buttons*       m_dpad;
+	Buttons*       m_connection_toggle;
 	MixedTriggers* m_triggers;
 	ControlGroup*  m_rumble;
 	ControlGroup*  m_options;

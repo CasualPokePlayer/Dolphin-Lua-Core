@@ -530,6 +530,7 @@ InputGrid::InputGrid(wxWindow* parent) : wxGrid(parent, wxID_ANY)
 		case COLUMN_C_Y:
 		case COLUMN_L_ANA:
 		case COLUMN_R_ANA:
+		case COLUMN_TOGGLE_CONNECTION:
 			SetColSize(i, 40);
 			break;
 		case COLUMN_D_UP:
@@ -671,6 +672,7 @@ void InputGrid::ParseStateInputs()
 		temp.button |= tempState.DPadDown ? PAD_BUTTON_DOWN : 0;
 		temp.button |= tempState.DPadLeft ? PAD_BUTTON_LEFT : 0;
 		temp.button |= tempState.DPadRight ? PAD_BUTTON_RIGHT : 0;
+		temp.button |= tempState.ToggleConnection ? PAD_TOGGLE_CONNECTION : 0;
 		temp.stickX = tempState.AnalogStickX;
 		temp.stickY = tempState.AnalogStickY;
 		temp.substickX = tempState.CStickX;
@@ -849,6 +851,7 @@ void InputGrid::SetSelectedInputsPress(bool toggle, bool value)
 			case COLUMN_D_RIGHT:
 			case COLUMN_L_ANA:
 			case COLUMN_R_ANA:
+			case COLUMN_TOGGLE_CONNECTION:
 				for (int row = topLeft.GetRow(); row <= botRight.GetRow(); row++)
 				{
 					if (m_groupByVI)
@@ -901,6 +904,7 @@ void InputGrid::SetSelectedInputsPress(bool toggle, bool value)
 		case COLUMN_D_RIGHT:
 		case COLUMN_L_ANA:
 		case COLUMN_R_ANA:
+		case COLUMN_TOGGLE_CONNECTION:
 			if (m_groupByVI)
 			{
 				int currFrameCount = row + m_firstFrameInGrid;
@@ -1266,6 +1270,7 @@ void InputGrid::SetInputAtRow(int row, TAStudioInput tastudioInput, u64 inputCou
 	SetCellValue(row, COLUMN_D_LEFT, padStatus.button & PAD_BUTTON_LEFT ? COLUMN_LABEL[COLUMN_D_LEFT] : "");
 	SetCellValue(row, COLUMN_D_RIGHT, padStatus.button & PAD_BUTTON_RIGHT ? COLUMN_LABEL[COLUMN_D_RIGHT] : "");
 
+	SetCellValue(row, COLUMN_TOGGLE_CONNECTION, padStatus.button & PAD_TOGGLE_CONNECTION ? COLUMN_LABEL[COLUMN_TOGGLE_CONNECTION] : "");
 }
 
 GCPadStatus InputGrid::GetInputAtSelectedRow()

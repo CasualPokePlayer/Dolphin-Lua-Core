@@ -57,7 +57,8 @@ struct ControllerState
 	bool L:1, R:1;                         // Binary triggers, 2 bits
 	bool disc:1;                           // Checks for disc being changed
 	bool reset:1;                          // Console reset button
-	bool reserved:2;                       // Reserved bits used for padding, 2 bits
+	bool ToggleConnection:1;               // Toggle whether controller is connected or disconnected
+	bool reserved:1;                       // Reserved bit used for padding, 1 bit
 
 	u8   TriggerL, TriggerR;               // Triggers, 16 bits
 	u8   AnalogStickX, AnalogStickY;       // Main Stick, 16 bits

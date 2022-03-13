@@ -57,12 +57,13 @@ private:
 		COLUMN_D_LEFT,
 		COLUMN_D_RIGHT,
 		COLUMN_C_X,
-		COLUMN_C_Y
+		COLUMN_C_Y,
+		COLUMN_TOGGLE_CONNECTION,
 	};
 	std::vector<wxString> COLUMN_LABEL = {
 		"Input", "VI", "Diff", "aX", "aY", "A",
 		"B", "X", "Y", "S", "Z", "L", "R", "La",
-		"Ra", "dU", "dD", "dL", "dR", "cX", "cY"
+		"Ra", "dU", "dD", "dL", "dR", "cX", "cY", "TC",
 	};
 	std::vector<TAStudioInput> m_inputVector;
 	std::vector<GCPadStatus> m_vectorClipboard;

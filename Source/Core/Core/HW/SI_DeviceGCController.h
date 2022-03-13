@@ -83,6 +83,9 @@ protected:
 	// Set this if we want to simulate the "TaruKonga" DK Bongo controller
 	bool m_simulate_konga = false;
 
+	bool m_IsConnected = true;
+	bool m_IsTogglingConnection = false; // sticky logic
+
 public:
 
 	// Constructor

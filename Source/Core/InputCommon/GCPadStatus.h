@@ -16,9 +16,10 @@ enum PadError
 
 enum
 {
-	PAD_USE_ORIGIN = 0x0080,
-	PAD_GET_ORIGIN = 0x2000,
-	PAD_ERR_STATUS = 0x8000,
+	PAD_USE_ORIGIN        = 0x0080,
+	PAD_GET_ORIGIN        = 0x2000,
+	PAD_TOGGLE_CONNECTION = 0x4000,
+	PAD_ERR_STATUS        = 0x8000,
 };
 
 enum PadButton
@@ -39,7 +40,7 @@ enum PadButton
 
 struct GCPadStatus
 {
-	u16 button;                 // Or-ed PAD_BUTTON_* and PAD_TRIGGER_* bits
+	u16 button;                 // Or-ed PAD_BUTTON_* and PAD_TRIGGER_* and PAD_TOGGLE_CONNECTION bits
 	u8  stickX;                 // 0 <= stickX       <= 255
 	u8  stickY;                 // 0 <= stickY       <= 255
 	u8  substickX;              // 0 <= substickX    <= 255
