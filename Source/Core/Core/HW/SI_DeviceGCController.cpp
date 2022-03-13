@@ -36,19 +36,16 @@ CSIDevice_GCController::CSIDevice_GCController(SIDevices device, int _iDeviceNum
 void CSIDevice_GCController::Calibrate()
 {
 	GCPadStatus pad_origin = GetPadStatus();
-	if (m_IsConnected)
-	{
-		memset(&m_Origin, 0, sizeof(SOrigin));
-		m_Origin.uButton = pad_origin.button;
-		m_Origin.uOriginStickX = pad_origin.stickX;
-		m_Origin.uOriginStickY = pad_origin.stickY;
-		m_Origin.uSubStickStickX = pad_origin.substickX;
-		m_Origin.uSubStickStickY = pad_origin.substickY;
-		m_Origin.uTrigger_L = pad_origin.triggerLeft;
-		m_Origin.uTrigger_R = pad_origin.triggerRight;
+	memset(&m_Origin, 0, sizeof(SOrigin));
+	m_Origin.uButton = pad_origin.button;
+	m_Origin.uOriginStickX = pad_origin.stickX;
+	m_Origin.uOriginStickY = pad_origin.stickY;
+	m_Origin.uSubStickStickX = pad_origin.substickX;
+	m_Origin.uSubStickStickY = pad_origin.substickY;
+	m_Origin.uTrigger_L = pad_origin.triggerLeft;
+	m_Origin.uTrigger_R = pad_origin.triggerRight;
 
-		m_Calibrated = true;
-	}
+	m_Calibrated = true;
 }
 
 int CSIDevice_GCController::RunBuffer(u8* _pBuffer, int _iLength)
@@ -79,12 +76,6 @@ int CSIDevice_GCController::RunBuffer(u8* _pBuffer, int _iLength)
 			INFO_LOG(SERIALINTERFACE, "PAD - Direct (Length: %d)", _iLength);
 			u32 high, low;
 			GetData(high, low);
-			if (!m_IsConnected)
-			{
-				constexpr u32 reply = SI_ERROR_NO_RESPONSE;
-				std::memcpy(_pBuffer, &reply, sizeof(reply));
-				return 4;
-			}
 			for (int i = 0; i < (_iLength - 1) / 2; i++)
 			{
 				_pBuffer[i + 0] = (high >> (i * 8)) & 0xff;
@@ -99,13 +90,6 @@ int CSIDevice_GCController::RunBuffer(u8* _pBuffer, int _iLength)
 
 			if (!m_Calibrated)
 				Calibrate();
-
-			if (!m_IsConnected)
-			{
-				constexpr u32 reply = SI_ERROR_NO_RESPONSE;
-				std::memcpy(_pBuffer, &reply, sizeof(reply));
-				return 4;
-			}
 
 			u8* pCalibration = reinterpret_cast<u8*>(&m_Origin);
 			for (int i = 0; i < (int)sizeof(SOrigin); i++)
@@ -122,13 +106,6 @@ int CSIDevice_GCController::RunBuffer(u8* _pBuffer, int _iLength)
 
 			if (!m_Calibrated)
 				Calibrate();
-
-			if (!m_IsConnected)
-			{
-				constexpr u32 reply = SI_ERROR_NO_RESPONSE;
-				std::memcpy(_pBuffer, &reply, sizeof(reply));
-				return 4;
-			}
 
 			u8* pCalibration = reinterpret_cast<u8*>(&m_Origin);
 			for (int i = 0; i < (int)sizeof(SOrigin); i++)
@@ -205,11 +182,6 @@ GCPadStatus CSIDevice_GCController::GetPadStatus()
 	{
 		m_IsConnected = !m_IsConnected;
 		m_IsTogglingConnection = true;
-	}
-
-	if (!m_IsConnected)
-	{
-		m_Calibrated = false;
 	}
 
 	PadStatus.button &= ~PAD_TOGGLE_CONNECTION;
