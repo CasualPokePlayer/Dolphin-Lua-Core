@@ -81,7 +81,7 @@ GCPad::GCPad(const unsigned int index) : m_index(index)
 
 	// connection toggle
 	groups.emplace_back(m_connection_toggle = new Buttons(_trans("Toggle Controller Connection")));
-	m_connection_toggle->controls.emplace_back(new ControllerEmu::Input(_trans("Button")));
+	m_connection_toggle->controls.emplace_back(new ControlGroup::Input(_trans("Button")));
 
 	// options
 	groups.emplace_back(m_options = new ControlGroup(_trans("Options")));
